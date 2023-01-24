@@ -1,0 +1,22 @@
+[gd_resource type="Environment" load_steps=4 format=3 uid="uid://blx5th6gvhcn1"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_lyq5u"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_w1s3o"]
+resource_local_to_scene = true
+panorama = SubResource("ViewportTexture_lyq5u")
+
+[sub_resource type="Sky" id="Sky_fvblx"]
+resource_local_to_scene = true
+sky_material = SubResource("PanoramaSkyMaterial_w1s3o")
+process_mode = 1
+
+[resource]
+resource_local_to_scene = true
+background_mode = 2
+sky = SubResource("Sky_fvblx")
+ambient_light_color = Color(0.6, 0.6, 0.8, 1)
+ambient_light_energy = 0.075
+fog_light_color = Color(0.6, 0.6, 0.8, 1)
+volumetric_fog_albedo = Color(0.6, 0.6, 0.8, 1)
+adjustment_saturation = 0.75

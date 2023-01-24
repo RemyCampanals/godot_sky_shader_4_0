@@ -1,0 +1,93 @@
+[gd_scene load_steps=14 format=3 uid="uid://p4604fyaoqul"]
+
+[ext_resource type="Script" path="res://scripts/sky.gd" id="1_utehc"]
+[ext_resource type="Environment" uid="uid://blx5th6gvhcn1" path="res://environments/sky_world_environment.tres" id="2_kxhla"]
+[ext_resource type="Texture2D" uid="uid://dhumpgte5gt7m" path="res://textures/sky_gradient_texture.tres" id="2_ovmsp"]
+[ext_resource type="Shader" path="res://shaders/clouds.gdshader" id="3_2b6hj"]
+[ext_resource type="Shader" path="res://shaders/sky.gdshader" id="3_5o6m2"]
+[ext_resource type="Texture2D" uid="uid://c8dj8ri6gxa1c" path="res://textures/Moon_1k.png" id="4_54g4j"]
+[ext_resource type="Texture2D" uid="uid://dp2byhhori3a3" path="res://textures/lightning.png" id="5_6fjy1"]
+[ext_resource type="Texture2D" uid="uid://b72hqe7vwyevj" path="res://textures/noise.png" id="8_7b3im"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3nl8p"]
+resource_local_to_scene = true
+shader = ExtResource("3_2b6hj")
+shader_parameter/WIND = Vector3(0.1, 0, 0)
+shader_parameter/SUN_POS = Vector3(0, 0.855364, 0.518027)
+shader_parameter/SIZE = 1.0
+shader_parameter/SOFTNESS = 1.0
+shader_parameter/COVERAGE = 0.55
+shader_parameter/HEIGHT = 0.35
+shader_parameter/THICKNESS = 15.0
+shader_parameter/ABSORPTION = 1.25
+shader_parameter/STEPS = 19
+shader_parameter/Noise = ExtResource("8_7b3im")
+
+[sub_resource type="ImageTexture" id="ImageTexture_3v1d6"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_aqw4j"]
+viewport_path = NodePath("CloudsViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dy1gx"]
+resource_local_to_scene = true
+shader = ExtResource("3_5o6m2")
+shader_parameter/SCATERRING = false
+shader_parameter/SUN_POS = Vector3(0, -0.855364, -0.518027)
+shader_parameter/MOON_POS = Vector3(0, 0.855364, 0.518027)
+shader_parameter/MOON_TEX_POS = Vector3(0, -0.26892, 0.963163)
+shader_parameter/MOON_PHASE = -1.0
+shader_parameter/moon_radius = 0.05
+shader_parameter/sun_radius = null
+shader_parameter/attenuation = 0.025
+shader_parameter/LIGHTING_STRENGTH = Vector3(0, 0, 0)
+shader_parameter/LIGHTTING_POS = null
+shader_parameter/sky_tone = 3.0
+shader_parameter/sky_density = 0.75
+shader_parameter/sky_rayleig_coeff = 0.75
+shader_parameter/sky_mie_coeff = 2.0
+shader_parameter/multiScatterPhase = null
+shader_parameter/anisotropicIntensity = 0.0
+shader_parameter/color_sky = Color(0.25098, 0.501961, 1, 1)
+shader_parameter/moon_tint = Color(1, 0.7, 0.35, 1)
+shader_parameter/clouds_tint = Color(1, 1, 1, 1)
+shader_parameter/MOON = ExtResource("4_54g4j")
+shader_parameter/cloud_env_texture = SubResource("ViewportTexture_aqw4j")
+shader_parameter/lighting_texture = ExtResource("5_6fjy1")
+shader_parameter/sky_gradient_texture = ExtResource("2_ovmsp")
+
+[sub_resource type="ImageTexture" id="ImageTexture_8oovh"]
+
+[node name="Sky" type="Node3D"]
+script = ExtResource("1_utehc")
+time_of_day_setup = 0.17
+sky_gradient_texture = ExtResource("2_ovmsp")
+color_sky = Color(0.25098, 0.501961, 1, 1)
+clouds_quality = 19
+moon_radius = 0.05
+moon_phase = -1.0
+night_level_light = 0.1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("2_kxhla")
+
+[node name="SunMoon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.518027, 0.855364, 0, -0.855364, 0.518027, 0, 0.855364, 0.518027)
+light_color = Color(0.6, 0.6, 0.8, 1)
+light_energy = 0.075
+
+[node name="CloudsViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(1024, 1024)
+
+[node name="CloudsTexture" type="Sprite2D" parent="CloudsViewport"]
+material = SubResource("ShaderMaterial_3nl8p")
+texture = SubResource("ImageTexture_3v1d6")
+centered = false
+
+[node name="SkyViewport" type="SubViewport" parent="."]
+size = Vector2i(2048, 2048)
+
+[node name="SkyTexture" type="Sprite2D" parent="SkyViewport"]
+material = SubResource("ShaderMaterial_dy1gx")
+texture = SubResource("ImageTexture_8oovh")
+centered = false
